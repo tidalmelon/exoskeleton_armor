@@ -1,0 +1,81 @@
+
+from models.loader.args import parser
+from configs.model_config import NLTK_DATA_PATH
+
+import models.shared as shared
+from models.loader import LoaderCheckPoint
+
+import nltk
+nltk.data.path = [NLTK_DATA_PATH] + nltk.data.path
+
+
+
+def main_llm():
+    #history = []
+    #last_print_len = 0
+    #for response, history in llm_model_ins.model.stream_chat(llm_model_ins.tokenizer, query, history):
+
+    #    print(response[last_print_len:], end="", flush=True)
+    #    last_print_len = len(response)
+
+    pass
+
+
+def main():
+
+    llm_model_chain_ins = shared.loaderLLM()
+
+    query = "AIGC对教育有什么影响"
+
+    context = """
+    首先，AIGC的出现使得学生的优势不再仅限于特定的知识性技能。在过去，学生需要花费大量时间和精力来记忆和掌握各种知识。然而，随着AIGC技术的不断发展，很多知识性的技能可能被AI所替代。因此，未来教育的首要目标应该是培养具有独立思考、正确价值判断能力和创新能力的人。
+
+其次，AIGC的出现将打破传统千篇一律的教育模式，让学生的个性化得到充分发展。每个学生都有自己独特的兴趣和能力，但在传统的教育模式下，学生往往只能按照统一的课程和要求进行学习，无法充分发挥自己的潜力。而AIGC可以通过智能推荐等技术，引导学生主动探索和研究自己感兴趣的问题，从而培养学生的创新能力和独立思考能力。
+
+同时，未来的教育一定是借助AI工具自我学习的时代。学生可以借助AIGC工具，根据自己的基础、需求和兴趣定时学习内容，从而获得更好的学习体验和学习效果，充分释放潜力。这种个性化的学习方式可以让学生更加专注于自己的兴趣和特长，提高学习效果和兴趣。
+
+然而，如何让孩子的潜力得到更大程度的发挥，成为每个家长研究的课题。家长需要了解孩子的兴趣和需求，选择适合孩子的AIGC工具，并引导孩子正确地使用这些工具。同时，家长还需要关注孩子的学习进展和反馈，及时调整孩子的学习计划和方法。
+
+最后，教育者和政策制定者也需要认真思考如何利用AIGC工具来改进教育方式和提高教育质量。他们需要关注学生的学习需求和兴趣，提供更加个性化和灵活的教育方式。同时，他们还需要关注AIGC工具的质量和准确性，确保学生获得正确和可靠的学习资源。
+    """
+
+    # 基于上下文的prompt模版，请务必保留"{question}"和"{context}"
+    PROMPT_TEMPLATE = """已知信息：
+{context} 
+
+根据上述已知信息，简洁和专业的来回答用户的问题。如果无法从中得到答案，请说 “根据已知信息无法回答该问题” 或 “没有提供足够的相关信息”，不允许在答案中添加编造成分，答案请使用中文。 问题是：{question}"""
+
+    prompt = PROMPT_TEMPLATE.replace("{question}", query).replace("{context}", context)
+
+
+
+    history = []
+    answer_result_stream_result = llm_model_chain_ins(
+            {"prompt": prompt, "history": history, "streaming": True})
+
+
+    last_print_len = 0
+    for answer_result in answer_result_stream_result['answer_result_stream']:
+        resp = answer_result.llm_output["answer"]
+        print(resp[last_print_len:], end="", flush=True)
+        last_print_len = len(resp)
+
+
+
+    print()
+    print('load success')
+    import time
+    time.sleep(10000)
+
+
+
+
+
+
+if __name__ == '__main__':
+    args = None
+    args = parser.parse_args()
+    args_dict = vars(args)
+
+    shared.loaderCheckPoint = LoaderCheckPoint(args_dict)
+    main()
