@@ -1,16 +1,21 @@
+import nltk
 
 from models.loader.args import parser
-from configs.model_config import NLTK_DATA_PATH
-
 import models.shared as shared
 from models.loader import LoaderCheckPoint
+from configs.model_config import (NLTK_DATA_PATH,
+                                  LLM_HISTORY_LEN,
+                                  STREAMING,
+                                  )
+from chains.local_doc_qa import LocalDocQA
 
-import nltk
+
+
+
 nltk.data.path = [NLTK_DATA_PATH] + nltk.data.path
 
 
-
-def main_llm():
+def test_llm():
     #history = []
     #last_print_len = 0
     #for response, history in llm_model_ins.model.stream_chat(llm_model_ins.tokenizer, query, history):
@@ -21,7 +26,7 @@ def main_llm():
     pass
 
 
-def main():
+def test_llmchain():
 
     llm_model_chain_ins = shared.loaderLLM()
 
@@ -47,6 +52,9 @@ def main():
 
     prompt = PROMPT_TEMPLATE.replace("{question}", query).replace("{context}", context)
 
+    #from langchain.prompts import PromptTemplate
+    #prompt = PromptTemplate.from_template(PROMPT_TEMPLATE)
+    #prompt = prompt.format(question=query, context=context)
 
 
     history = []
@@ -60,15 +68,47 @@ def main():
         print(resp[last_print_len:], end="", flush=True)
         last_print_len = len(resp)
 
-
-
     print()
     print('load success')
-    import time
-    time.sleep(10000)
 
+def test_local_kg_qa():
+    llm_model_chain_ins = shared.loaderLLM()
+    llm_model_chain_ins.history_len = LLM_HISTORY_LEN
 
+    local_doc_qa = LocalDocQA()
+    local_doc_qa.init_cfg(llm_model_chain=llm_model_chain_ins)
 
+    vs_path = None
+    filepath = './input_data'
+
+    vs_path, loaded_files = local_doc_qa.init_knowledge_vector_store(filepath)
+    if vs_path:
+        print(f'has created a new vs file: {vs_path}')
+
+    history = []
+    while True:
+        query = input("Input your question 请输入问题：")
+        #query = "三国演义的故事概要"
+        #query = "AIGC对教育有什么影响"
+        last_print_len = 0
+        for resp, history in local_doc_qa.get_knowledge_based_answer(query=query,
+                                                                     vs_path=vs_path,
+                                                                     chat_history=history,
+                                                                     streaming=STREAMING):
+            if STREAMING:
+                print(resp["result"][last_print_len:], end="", flush=True)
+                last_print_len = len(resp["result"])
+            else:
+                print(resp["result"])
+        print()
+        print()
+        #if REPLY_WITH_SOURCE:
+        #    source_text = [f"""出处 [{inum + 1}] {os.path.split(doc.metadata['source'])[-1]}：\n\n{doc.page_content}\n\n"""
+        #                   # f"""相关度：{doc.metadata['score']}\n\n"""
+        #                   for inum, doc in
+        #                   enumerate(resp["source_documents"])]
+        #    print("\n\n" + "\n\n".join(source_text))
+                          
 
 
 
@@ -78,4 +118,19 @@ if __name__ == '__main__':
     args_dict = vars(args)
 
     shared.loaderCheckPoint = LoaderCheckPoint(args_dict)
-    main()
+    #test_llmchain()
+    test_local_kg_qa()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
