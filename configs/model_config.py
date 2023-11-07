@@ -19,6 +19,9 @@ CHUNK_SIZE = 250
 # 传入LLM的历史记录长度
 LLM_HISTORY_LEN = 3
 # 知识检索内容相关度 Score, 数值范围约为0-1100，如果为0，则不生效，建议设置为500左右，经测试设置为小于500时，匹配结果更精准
+# 500 这个阈值还是合理的。 大于500的往往相关度很低了. 设置为500主要起到过滤作用
+# 相关度分数 > 500 的将被剔除. 因为这里采用的时欧式距离，越小相关度越大。
+# MyFAISS: if i == -1 or 0 < self.score_threshold < scores[0][j]:
 VECTOR_SEARCH_SCORE_THRESHOLD = 500
 # Embedding model name
 EMBEDDING_MODEL = "text2vec"

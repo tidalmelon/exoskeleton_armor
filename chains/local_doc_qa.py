@@ -50,7 +50,7 @@ HuggingFaceEmbeddings.__hash__ = _embeddings_hash
 
 
 # will keep CACHED_VS_NUM of vector store caches
-@lru_cache(CACHED_VS_NUM)
+# @lru_cache(CACHED_VS_NUM)
 def load_vector_store(vs_path, embeddings):
     return MyFAISS.load_local(vs_path, embeddings)
 
@@ -167,9 +167,10 @@ class LocalDocQA:
         loaded_files = []
         failed_files = []
         if isinstance(filepath, str):
+            # 如果单个文件（文件夹）不存在
             if not os.path.exists(filepath):
                 print(f"path {filepath} does not exist")
-                return None
+            # 如果单个文件
             elif os.path.isfile(filepath):
                 file = os.path.split(filepath)[-1]
                 try:
@@ -179,22 +180,24 @@ class LocalDocQA:
                 except Exception as e:
                     logger.error(e)
                     logger.info(f"{file} loaded failed")
-                    return None
+            # 如果单个文件夹
             elif os.path.isdir(filepath):
                 docs = []
                 for fullfilepath, file in tqdm(zip(*tree(filepath, ignore_dir_names=['tmp_files'])), desc='loading files'):
-                    try:
-                        docs += load_file(fullfilepath, sentence_size)
-                        logger.info(f"{file} loaded success!")
-                        loaded_files.append(fullfilepath)
-                    except Exception as e:
-                        logger.error(e)
-                        failed_files.append(file)
+                    print('----', fullfilepath, file)
+                    #try:
+                    docs += load_file(fullfilepath, sentence_size)
+                    logger.info(f"{file} loaded success!")
+                    loaded_files.append(fullfilepath)
+                    #except Exception as e:
+                    #    logger.error(e)
+                    #    failed_files.append(file)
 
                 if len(failed_files) > 0:
                     logger.info("the following files were not loaded:")
                     for file in failed_files:
                         logger.info(f"{file}\n")
+        # 如果是List, 则只能是文件列表，不能是文件夹列表
         else:
 
             docs = []
@@ -231,6 +234,8 @@ class LocalDocQA:
 
 
     def get_knowledge_based_answer(self, query, vs_path, chat_history=[], streaming: bool = STREAMING):
+
+        print('get_knowledge_based_answer vs_path', vs_path)
         
         # 加载向量数据库
         vector_store = load_vector_store(vs_path, self.embeddings)

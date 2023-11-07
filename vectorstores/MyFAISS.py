@@ -55,6 +55,8 @@ class MyFAISS(FAISS, VectorStore):
         if self._normalize_L2:
             faiss.normalize_L2(vector)
         # 拿到相似度top k的索引 indices
+        # I: indices [[409 603 602 203 600]]
+        # D: scores  [[650.19836 657.0269  718.594   746.26337 746.36597]]
         scores, indices = self.index.search(vector, k)
         docs = []
         id_set = set()
@@ -62,7 +64,8 @@ class MyFAISS(FAISS, VectorStore):
         rearrange_id_list = False
         for j, i in enumerate(indices[0]):
             if i == -1 or 0 < self.score_threshold < scores[0][j]:
-                # This happens when not enough docs are returned.
+                # -1: This happens when not enough docs are returned.
+                # 或者 相关度分数 > 500 的将被剔除. 因为这里采用的时欧式距离，越小相关度越大。
                 continue
             # 查倒排索引，拿到chunk_id
             if i in self.index_to_docstore_id:
@@ -107,12 +110,9 @@ class MyFAISS(FAISS, VectorStore):
                             rearrange_id_list = True
                 if break_flag:
                     break
-        print(self.chunk_content_expand, rearrange_id_list)
         if (not self.chunk_content_expand) or (not rearrange_id_list):
-            print('----0001')
             return docs
         if len(id_set) == 0 and self.score_threshold > 0:
-            print('----0002')
             return []
         id_list = sorted(list(id_set))
         id_lists = self.seperate_list(id_list)
@@ -131,7 +131,6 @@ class MyFAISS(FAISS, VectorStore):
             doc_score = min([scores[0][id] for id in [indices[0].tolist().index(i) for i in id_seq if i in indices[0]]])
             doc.metadata["score"] = int(doc_score)
             docs.append(doc)
-        print('----0003')
         return docs
 
     def delete_doc(self, source: str or List[str]):
