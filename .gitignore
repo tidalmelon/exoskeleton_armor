@@ -9,6 +9,9 @@ __pycache__/
 # third party lib
 nltk_data/
 
+*.faiss
+*.pkl
+
 # Distribution / packaging
 .Python
 build/
