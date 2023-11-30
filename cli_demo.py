@@ -117,9 +117,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args_dict = vars(args)
 
-    shared.loaderCheckPoint = LoaderCheckPoint(args_dict)
+    print(args_dict)
+
+    #shared.loaderCheckPoint = LoaderCheckPoint(args_dict)
     #test_llmchain()
-    test_local_kg_qa()
+    #test_local_kg_qa()
 
 
 

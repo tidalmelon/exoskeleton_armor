@@ -1,0 +1,18 @@
+2023-11-28 20:27:56,103	File "chatglm_api.py",line 24	INFO: Start initialize model...
+2023-11-28 20:28:05,577	File "chatglm_api.py",line 30	INFO: Model initialization finished.
+2023-11-28 20:28:05,578	File "chatglm_api.py",line 140	INFO: starting server...
+2023-11-28 20:28:37,880	File "chatglm_api.py",line 120	INFO: Prompt - 你好
+2023-11-28 20:28:37,881	File "chatglm_api.py",line 51	INFO: max_length=10000, temperature=0.6, top_p=0.3
+2023-11-28 20:28:44,027	File "chatglm_api.py",line 66	INFO: Answer - 你好👋！我是人工智能助手 ChatGLM2-6B，很高兴见到你，欢迎问我任何问题。
+2023-11-28 20:28:44,037	File "chatglm_api.py",line 96	INFO: Prompt - 你好
+2023-11-28 20:28:44,037	File "chatglm_api.py",line 39	INFO: max_length=10000, temperature=0.6, top_p=0.3
+2023-11-28 20:28:49,440	File "chatglm_api.py",line 103	INFO: Answer - 你好👋！我是人工智能助手 ChatGLM2-6B，很高兴见到你，欢迎问我任何问题。
+2023-11-28 20:29:26,936	File "chatglm_api.py",line 24	INFO: Start initialize model...
+2023-11-28 20:29:36,387	File "chatglm_api.py",line 30	INFO: Model initialization finished.
+2023-11-28 20:29:36,389	File "chatglm_api.py",line 140	INFO: starting server...
+2023-11-28 20:30:03,380	File "chatglm_api.py",line 120	INFO: Prompt - 你好
+2023-11-28 20:30:03,381	File "chatglm_api.py",line 51	INFO: max_length=10000, temperature=0.6, top_p=0.3
+2023-11-28 20:30:09,518	File "chatglm_api.py",line 66	INFO: Answer - 你好👋！我是人工智能助手 ChatGLM2-6B，很高兴见到你，欢迎问我任何问题。
+2023-11-28 20:30:09,528	File "chatglm_api.py",line 96	INFO: Prompt - 你好
+2023-11-28 20:30:09,528	File "chatglm_api.py",line 39	INFO: max_length=10000, temperature=0.6, top_p=0.3
+2023-11-28 20:30:14,937	File "chatglm_api.py",line 103	INFO: Answer - 你好👋！我是人工智能助手 ChatGLM2-6B，很高兴见到你，欢迎问我任何问题。

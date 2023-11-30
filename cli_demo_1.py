@@ -94,5 +94,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args_dict = vars(args)
 
-    shared.loaderCheckPoint = LoaderCheckPoint(args_dict)
-    main()
+    print(args_dict)
+
+    #shared.loaderCheckPoint = LoaderCheckPoint(args_dict)
+    #main()
