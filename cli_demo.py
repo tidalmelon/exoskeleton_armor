@@ -90,7 +90,6 @@ def test_local_kg_qa():
         query = input("Input your question 请输入问题：")
         #query = "三国演义的故事概要"
         #query = "AIGC对教育有什么影响"
-        #query = "技术合伙人被踢出局的原因有哪些"
         last_print_len = 0
         for resp, history in local_doc_qa.get_knowledge_based_answer(query=query,
                                                                      vs_path=vs_path,
